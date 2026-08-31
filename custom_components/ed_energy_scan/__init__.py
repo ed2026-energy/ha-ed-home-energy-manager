@@ -8,6 +8,7 @@ import aiohttp
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.event import async_track_time_interval
 import datetime as dt
 
@@ -18,13 +19,18 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def _run_scan(hass: HomeAssistant, pairing_token: str) -> None:
-    known = scan_known_devices(hass)
-    discovered = await scan_unknown_devices(hass)
+    try:
+        known = scan_known_devices(hass)
+        discovered = await scan_unknown_devices(hass)
+    except Exception:  # noqa: BLE001 - een fout in het scannen mag de integratie nooit stilzwijgend laten hangen
+        _LOGGER.exception("Scannen van apparaten mislukt")
+        return
+
     if not known and not discovered:
         _LOGGER.debug("Scan leverde niets op, niets te versturen.")
         return
 
-    session = hass.helpers.aiohttp_client.async_get_clientsession()
+    session = async_get_clientsession(hass)
     try:
         async with session.post(
             f"{DEFAULT_API_BASE}/ha/scan/ingest",
