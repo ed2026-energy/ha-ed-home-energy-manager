@@ -15,14 +15,30 @@ from .oui_table import lookup_vendor
 
 _LOGGER = logging.getLogger(__name__)
 
+# Integraties die HA's device registry vullen met niet-fysieke "software-devices" (bv. één
+# device per HACS-repo, met de GitHub-gebruikersnaam van de auteur als "manufacturer") —
+# irrelevant voor deze scan, die alleen echte energie-/huishoudapparatuur wil vinden.
+NON_HARDWARE_DOMAINS = {
+    "hacs", "scheduler", "mobile_app", "persistent_notification", "met", "sun",
+    "google_translate", "shopping_list", "tts", "stt", "wyoming", "rss_feed_template",
+    "browser_mod", "spotcast", "lovelace_gen", "ed_energy_scan",
+}
+
 
 def scan_known_devices(hass: HomeAssistant) -> list[dict]:
     registry = dr.async_get(hass)
     known = []
     for device in registry.devices.values():
+        # entry_type=SERVICE markeert HA-devices die geen fysiek apparaat zijn (precies wat
+        # HACS/Scheduler/etc. gebruiken) — de belangrijkste filter, domain-lijst is een tweede
+        # vangnet voor integraties die dat (nog) niet correct instellen.
+        if getattr(device, "entry_type", None) is not None:
+            continue
         if not device.manufacturer and not device.model:
             continue
         domain = next(iter(device.identifiers), (None, None))[0]
+        if domain in NON_HARDWARE_DOMAINS:
+            continue
         known.append({
             "manufacturer": device.manufacturer,
             "model": device.model,
