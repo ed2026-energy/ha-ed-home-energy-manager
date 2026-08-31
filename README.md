@@ -1,4 +1,8 @@
+<p align="center"><img src="icon.png" width="96" alt="ED Energy Component Scan" /></p>
+
 # ED Energy Component Scan
+
+Door [Embedded Design](https://www.embedded-design.nl) — systemen, data en AI op een lijn.
 
 Home Assistant custom-integratie die:
 
