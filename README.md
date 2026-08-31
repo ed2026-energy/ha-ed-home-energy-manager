@@ -1,4 +1,4 @@
-# ED Energy Scan
+# ED Energy Component Scan
 
 Home Assistant custom-integratie die:
 
@@ -10,8 +10,8 @@ Home Assistant custom-integratie die:
 
 1. Log in op [embedded-design.nl/#/energie/home-assistant](https://www.embedded-design.nl/#/energie/home-assistant) en maak een pairing-token aan.
 2. Voeg `https://github.com/ed2026-energy/ha-ed-energy-components-scan` toe als custom repository in HACS (categorie: Integration).
-3. Installeer "ED Energy Scan", herstart Home Assistant.
-4. Instellingen → Apparaten & Services → Integratie toevoegen → "ED Energy Scan" → plak het pairing-token.
+3. Installeer "ED Energy Component Scan", herstart Home Assistant.
+4. Instellingen → Apparaten & Services → Integratie toevoegen → "ED Energy Component Scan" → plak het pairing-token.
 
 ## Privacy
 

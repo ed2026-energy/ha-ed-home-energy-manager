@@ -1,4 +1,4 @@
-"""ED Energy Scan: leest lokaal welke apparaten HA al kent en welke onbekende
+"""ED Energy Component Scan: leest lokaal welke apparaten HA al kent en welke onbekende
 apparaten er op het netwerk zijn, en stuurt dat (alleen merk/model/vendor-fingerprints,
 geen adresgegevens) naar de ED-catalogus-cloud voor review op embedded-design.nl.
 """
