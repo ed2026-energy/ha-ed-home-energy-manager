@@ -1,0 +1,11 @@
+{
+  "domain": "ed_energy_scan",
+  "name": "ED Energy Scan",
+  "version": "0.1.0",
+  "documentation": "https://www.embedded-design.nl/#/energie/home-assistant",
+  "issue_tracker": "https://www.embedded-design.nl/#/volgende-stap",
+  "codeowners": ["@embedded-design"],
+  "config_flow": true,
+  "iot_class": "cloud_push",
+  "requirements": []
+}

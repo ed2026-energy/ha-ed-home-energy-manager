@@ -1,0 +1,19 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ED Energy Scan koppelen",
+        "description": "Log in op embedded-design.nl/#/energie/home-assistant en maak daar een pairing-token aan. Plak dat token hieronder.",
+        "data": {
+          "pairing_token": "Pairing-token"
+        }
+      }
+    },
+    "error": {
+      "invalid_token": "Dit lijkt geen geldig pairing-token (moet beginnen met 'ha_')."
+    },
+    "abort": {
+      "already_configured": "Deze koppeling is al toegevoegd."
+    }
+  }
+}
