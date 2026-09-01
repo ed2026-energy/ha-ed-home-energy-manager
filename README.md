@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/ed2026-energy/ha-ed-energy-components-scan/main/icon.png" width="96" alt="ED Energy Component Scan" /></p>
+![ED Energy Component Scan](https://raw.githubusercontent.com/ed2026-energy/ha-ed-energy-components-scan/main/icon.png)
 
 # ED Energy Component Scan
 
