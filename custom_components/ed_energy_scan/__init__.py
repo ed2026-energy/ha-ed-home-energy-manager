@@ -7,6 +7,7 @@ import logging
 import aiohttp
 
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.event import async_track_time_interval
@@ -16,6 +17,7 @@ from .const import CONF_PAIRING_TOKEN, DEFAULT_API_BASE, DOMAIN, SCAN_INTERVAL_H
 from .discovery import scan_known_devices, scan_unknown_devices
 
 _LOGGER = logging.getLogger(__name__)
+PLATFORMS = [Platform.BUTTON]
 
 
 async def _run_scan(hass: HomeAssistant, pairing_token: str) -> None:
@@ -50,25 +52,33 @@ async def _run_scan(hass: HomeAssistant, pairing_token: str) -> None:
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     pairing_token = entry.data[CONF_PAIRING_TOKEN]
 
-    async def _scheduled_scan(_now=None):
+    async def trigger_scan() -> None:
+        """Door de 'Scan nu'-knop (button.py) en de scan_now-service aangeroepen."""
         await _run_scan(hass, pairing_token)
 
+    async def _scheduled_scan(_now=None):
+        await trigger_scan()
+
     async def _handle_scan_now(_call):
-        await _run_scan(hass, pairing_token)
+        await trigger_scan()
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         "unsub": async_track_time_interval(hass, _scheduled_scan, dt.timedelta(hours=SCAN_INTERVAL_HOURS)),
+        "trigger_scan": trigger_scan,
     }
     hass.services.async_register(DOMAIN, SERVICE_SCAN_NOW, _handle_scan_now)
 
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
     # Eerste scan meteen bij het toevoegen van de integratie, niet pas na 6 uur wachten.
-    hass.async_create_task(_run_scan(hass, pairing_token))
+    hass.async_create_task(trigger_scan())
 
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    unloaded = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     data = hass.data.get(DOMAIN, {}).pop(entry.entry_id, None)
     if data and data.get("unsub"):
         data["unsub"]()
-    return True
+    return unloaded
