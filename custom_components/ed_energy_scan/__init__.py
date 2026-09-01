@@ -1,6 +1,8 @@
-"""ED Energy Component Scan: leest lokaal welke apparaten HA al kent en welke onbekende
-apparaten er op het netwerk zijn, en stuurt dat (alleen merk/model/vendor-fingerprints,
-geen adresgegevens) naar de ED-catalogus-cloud voor review op embedded-design.nl.
+"""EnergyManager (voorheen "ED Energy Component Scan"): leest lokaal welke apparaten HA
+al kent en welke onbekende apparaten er op het netwerk zijn, stuurt dat (alleen merk/
+model/vendor-fingerprints, geen adresgegevens) naar de EnergyManager-cloud op
+embedded-design.nl voor review, en haalt daar de opgeslagen programmering (standaard/
+overrule/minimaal per apparaat) weer op om als sensor-attributen beschikbaar te maken.
 """
 import logging
 
@@ -11,13 +13,15 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.event import async_track_time_interval
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 import datetime as dt
 
-from .const import CONF_PAIRING_TOKEN, DEFAULT_API_BASE, DOMAIN, SCAN_INTERVAL_HOURS, SERVICE_SCAN_NOW
+from .const import CONF_PAIRING_TOKEN, DEFAULT_API_BASE, DOMAIN, SCAN_INTERVAL_HOURS, SCHEDULE_POLL_MINUTES, SERVICE_SCAN_NOW
 from .discovery import scan_known_devices, scan_unknown_devices
+from .schedule import async_fetch_schedule
 
 _LOGGER = logging.getLogger(__name__)
-PLATFORMS = [Platform.BUTTON]
+PLATFORMS = [Platform.BUTTON, Platform.SENSOR]
 
 
 async def _run_scan(hass: HomeAssistant, pairing_token: str) -> None:
@@ -62,12 +66,31 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     async def _handle_scan_now(_call):
         await trigger_scan()
 
+    async def _update_schedule():
+        data = await async_fetch_schedule(hass, pairing_token)
+        if data is None:
+            raise UpdateFailed("Programmering ophalen mislukt")
+        return data
+
+    schedule_coordinator = DataUpdateCoordinator(
+        hass,
+        _LOGGER,
+        name=f"{DOMAIN}_schedule",
+        update_method=_update_schedule,
+        update_interval=dt.timedelta(minutes=SCHEDULE_POLL_MINUTES),
+    )
+
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         "unsub": async_track_time_interval(hass, _scheduled_scan, dt.timedelta(hours=SCAN_INTERVAL_HOURS)),
         "trigger_scan": trigger_scan,
+        "schedule_coordinator": schedule_coordinator,
     }
     hass.services.async_register(DOMAIN, SERVICE_SCAN_NOW, _handle_scan_now)
 
+    # async_refresh (niet async_config_entry_first_refresh) zodat een tijdelijk
+    # onbereikbare schedule-endpoint het opzetten van de integratie niet blokkeert —
+    # scannen moet blijven werken ook als de programmering-cloud even niet reageert.
+    await schedule_coordinator.async_refresh()
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     # Eerste scan meteen bij het toevoegen van de integratie, niet pas na 6 uur wachten.

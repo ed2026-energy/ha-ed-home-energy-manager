@@ -18,7 +18,7 @@ class EdEnergyScanConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             else:
                 await self.async_set_unique_id(token[:16])
                 self._abort_if_unique_id_configured()
-                return self.async_create_entry(title="ED Energy Component Scan", data={CONF_PAIRING_TOKEN: token})
+                return self.async_create_entry(title="EnergyManager", data={CONF_PAIRING_TOKEN: token})
 
         return self.async_show_form(
             step_id="user",

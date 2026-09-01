@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "ED Energy Component Scan koppelen",
+        "title": "EnergyManager koppelen",
         "description": "Log in op embedded-design.nl/#/energie/home-assistant en maak daar een pairing-token aan. Plak dat token hieronder.",
         "data": {
           "pairing_token": "Pairing-token"

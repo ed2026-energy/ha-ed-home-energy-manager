@@ -1,7 +1,7 @@
 {
   "domain": "ed_energy_scan",
-  "name": "ED Energy Component Scan",
-  "version": "0.1.0",
+  "name": "EnergyManager",
+  "version": "0.2.0",
   "documentation": "https://www.embedded-design.nl/#/energie/home-assistant",
   "issue_tracker": "https://www.embedded-design.nl/#/volgende-stap",
   "codeowners": ["@embedded-design"],

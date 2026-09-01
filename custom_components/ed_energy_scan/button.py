@@ -25,7 +25,7 @@ class EdEnergyScanButton(ButtonEntity):
         self._attr_unique_id = f"{entry.entry_id}_scan_now"
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
-            name="ED Energy Component Scan",
+            name="EnergyManager",
             manufacturer="Embedded Design",
             entry_type="service",
         )
