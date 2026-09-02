@@ -16,6 +16,7 @@ from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 import datetime as dt
 
+from .actuate import apply_schedule
 from .const import CONF_PAIRING_TOKEN, DEFAULT_API_BASE, DOMAIN, SCAN_INTERVAL_HOURS, SCHEDULE_POLL_MINUTES, SERVICE_SCAN_NOW
 from .discovery import scan_known_devices, scan_unknown_devices
 from .schedule import async_fetch_schedule
@@ -70,6 +71,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         data = await async_fetch_schedule(hass, pairing_token)
         if data is None:
             raise UpdateFailed("Programmering ophalen mislukt")
+        # Ophalen en toepassen gebeuren bewust in dezelfde cyclus (geen aparte timer) —
+        # apply_schedule respecteert zelf blokkades en de per-apparaat opt-in.
+        await apply_schedule(hass, data)
         return data
 
     schedule_coordinator = DataUpdateCoordinator(
