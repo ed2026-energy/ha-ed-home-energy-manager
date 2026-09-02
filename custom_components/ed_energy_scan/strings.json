@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "EnergyManager koppelen",
+        "title": "Home Energy Manager koppelen",
         "description": "Log in op embedded-design.nl/#/energie/home-assistant en maak daar een pairing-token aan. Plak dat token hieronder.",
         "data": {
           "pairing_token": "Pairing-token"

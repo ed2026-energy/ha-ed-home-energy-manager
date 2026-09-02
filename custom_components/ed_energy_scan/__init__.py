@@ -1,8 +1,8 @@
-"""EnergyManager (voorheen "ED Energy Component Scan"): leest lokaal welke apparaten HA
-al kent en welke onbekende apparaten er op het netwerk zijn, stuurt dat (alleen merk/
-model/vendor-fingerprints, geen adresgegevens) naar de EnergyManager-cloud op
-embedded-design.nl voor review, en haalt daar de opgeslagen programmering (standaard/
-overrule/minimaal per apparaat) weer op om als sensor-attributen beschikbaar te maken.
+"""Home Energy Manager (voorheen "ED Energy Component Scan"): leest lokaal welke apparaten
+HA al kent en welke onbekende apparaten er op het netwerk zijn, stuurt dat (alleen merk/
+model/vendor-fingerprints, geen adresgegevens) naar de embedded-design.nl-cloud voor
+review, en haalt daar de opgeslagen programmering (standaard/overrule/minimaal per
+apparaat) weer op om als sensor-attributen beschikbaar te maken.
 """
 import logging
 

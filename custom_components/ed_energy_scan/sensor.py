@@ -62,7 +62,7 @@ class EnergyManagerScheduleSensor(CoordinatorEntity, SensorEntity):
     def device_info(self) -> DeviceInfo:
         return DeviceInfo(
             identifiers={(DOMAIN, f"{self._entry.entry_id}_device_{self.device_id}")},
-            name=(self._device_data() or {}).get("merk") or "EnergyManager-apparaat",
+            name=(self._device_data() or {}).get("merk") or "Home Energy Manager-apparaat",
             manufacturer="Embedded Design",
             via_device=(DOMAIN, self._entry.entry_id),
         )

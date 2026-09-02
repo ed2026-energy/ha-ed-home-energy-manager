@@ -1,4 +1,4 @@
-"""Programmering ophalen bij de EnergyManager-cloud (embedded-design.nl): voor elk
+"""Programmering ophalen bij de Home Energy Manager-cloud (embedded-design.nl): voor elk
 gescand apparaat de resolved standaard/overrule/minimaal-programma's voor een dag
 (96 kwartier-slots). Toepassen op specifieke merken/entiteiten gebeurt hier bewust
 nog niet — dat vraagt per-merk service-call-mappings die nu nergens vastliggen.
