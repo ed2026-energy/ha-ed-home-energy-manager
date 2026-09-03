@@ -5,6 +5,7 @@ review, en haalt daar de opgeslagen programmering (standaard/overrule/minimaal p
 apparaat) weer op om als sensor-attributen beschikbaar te maken.
 """
 import logging
+import uuid
 
 import aiohttp
 
@@ -25,6 +26,17 @@ _LOGGER = logging.getLogger(__name__)
 PLATFORMS = [Platform.BUTTON, Platform.SENSOR]
 
 
+def _host_mac() -> str:
+    """MAC-adres van deze HA-host, als hex-string met dubbele punten — identificeert de
+    fysieke woning voor de cloud (zie mergeIntoCanonicalInstallation in haScanIngest.js),
+    onafhankelijk van hoe vaak er opnieuw gepaird wordt. uuid.getnode() valt bij
+    ontbreken van een MAC terug op een willekeurig maar wél stabiel (per proces) getal —
+    dat is voor deze dedup-doeleinden acceptabel, al is het dan geen écht hardware-MAC.
+    """
+    node = uuid.getnode()
+    return ":".join(f"{(node >> shift) & 0xFF:02x}" for shift in range(40, -8, -8))
+
+
 async def _run_scan(hass: HomeAssistant, pairing_token: str) -> None:
     try:
         known = scan_known_devices(hass)
@@ -41,7 +53,7 @@ async def _run_scan(hass: HomeAssistant, pairing_token: str) -> None:
     try:
         async with session.post(
             f"{DEFAULT_API_BASE}/ha/scan/ingest",
-            json={"known": known, "discovered": discovered},
+            json={"known": known, "discovered": discovered, "hostMac": _host_mac()},
             headers={"x-pairing-token": pairing_token},
             timeout=aiohttp.ClientTimeout(total=60),
         ) as response:
