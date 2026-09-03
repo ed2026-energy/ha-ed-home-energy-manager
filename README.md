@@ -1,4 +1,4 @@
-![Home Energy Manager](https://raw.githubusercontent.com/ed2026-energy/ha-ed-energy-components-scan/main/icon.png)
+![Home Energy Manager](https://raw.githubusercontent.com/ed2026-energy/ha-ed-home-energy-manager/main/icon.png)
 
 # Home Energy Manager
 
@@ -16,7 +16,7 @@ Home Assistant custom-integratie die:
 ## Installatie
 
 1. Log in op [embedded-design.nl/#/energie/home-assistant](https://www.embedded-design.nl/#/energie/home-assistant) en maak een pairing-token aan.
-2. Voeg `https://github.com/ed2026-energy/ha-ed-energy-components-scan` toe als custom repository in HACS (categorie: Integration).
+2. Voeg `https://github.com/ed2026-energy/ha-ed-home-energy-manager` toe als custom repository in HACS (categorie: Integration).
 3. Installeer "Home Energy Manager", herstart Home Assistant.
 4. Instellingen → Apparaten & Services → Integratie toevoegen → "Home Energy Manager" → plak het pairing-token.
 
