@@ -34,7 +34,7 @@ def scan_known_devices(hass: HomeAssistant) -> list[dict]:
             "model": device.model,
             "domain": domain,
             "deviceId": device.id,
-            "entryType": entry_type.value if entry_type is not None else None,
+            "entryType": getattr(entry_type, "value", entry_type),
         })
     return known
 
