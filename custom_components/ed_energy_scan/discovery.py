@@ -9,6 +9,7 @@ import logging
 import re
 
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import area_registry as ar
 from homeassistant.helpers import device_registry as dr
 
 from .oui_table import lookup_vendor
@@ -23,18 +24,21 @@ def scan_known_devices(hass: HomeAssistant) -> list[dict]:
     # bijgesteld zonder dat elke gebruiker deze integratie opnieuw hoeft te installeren.
     # entry_type wordt wel meegestuurd, want dat is het betrouwbaarste server-side signaal.
     registry = dr.async_get(hass)
+    areas = ar.async_get(hass)
     known = []
     for device in registry.devices.values():
         if not device.manufacturer and not device.model:
             continue
         domain = next(iter(device.identifiers), (None, None))[0]
         entry_type = getattr(device, "entry_type", None)
+        area = areas.async_get_area(device.area_id) if device.area_id else None
         known.append({
             "manufacturer": device.manufacturer,
             "model": device.model,
             "domain": domain,
             "deviceId": device.id,
             "entryType": getattr(entry_type, "value", entry_type),
+            "area": area.name if area else None,
         })
     return known
 
