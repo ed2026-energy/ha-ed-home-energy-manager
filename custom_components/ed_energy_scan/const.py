@@ -11,3 +11,8 @@ SERVICE_SCAN_NOW = "scan_now"
 # aansturen van een device (service calls naar de juiste entiteit) is nog niet
 # geïmplementeerd en moet per merk apart worden toegevoegd.
 SCHEDULE_POLL_MINUTES = 15
+
+# Actie-verzoeken (bv. "upgrade deze integratie") vanaf de website — vaker gepolld dan de
+# programmering, want dit is een user-initiated actie waar iemand actief op de website op
+# zit te wachten.
+ACTION_REQUESTS_POLL_MINUTES = 5

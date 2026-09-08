@@ -17,8 +17,17 @@ from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 import datetime as dt
 
+from .action_requests import async_process_action_requests
 from .actuate import apply_schedule
-from .const import CONF_PAIRING_TOKEN, DEFAULT_API_BASE, DOMAIN, SCAN_INTERVAL_HOURS, SCHEDULE_POLL_MINUTES, SERVICE_SCAN_NOW
+from .const import (
+    ACTION_REQUESTS_POLL_MINUTES,
+    CONF_PAIRING_TOKEN,
+    DEFAULT_API_BASE,
+    DOMAIN,
+    SCAN_INTERVAL_HOURS,
+    SCHEDULE_POLL_MINUTES,
+    SERVICE_SCAN_NOW,
+)
 from .discovery import scan_known_devices, scan_unknown_devices
 from .schedule import async_fetch_schedule
 
@@ -96,8 +105,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         update_interval=dt.timedelta(minutes=SCHEDULE_POLL_MINUTES),
     )
 
+    async def _poll_action_requests(_now=None) -> None:
+        await async_process_action_requests(hass, pairing_token)
+
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         "unsub": async_track_time_interval(hass, _scheduled_scan, dt.timedelta(hours=SCAN_INTERVAL_HOURS)),
+        "unsub_action_requests": async_track_time_interval(
+            hass, _poll_action_requests, dt.timedelta(minutes=ACTION_REQUESTS_POLL_MINUTES)
+        ),
         "trigger_scan": trigger_scan,
         "schedule_coordinator": schedule_coordinator,
     }
@@ -111,6 +126,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     # Eerste scan meteen bij het toevoegen van de integratie, niet pas na 6 uur wachten.
     hass.async_create_task(trigger_scan())
+    # Idem voor eventuele al openstaande actie-verzoeken — niet pas na 5 minuten wachten.
+    hass.async_create_task(_poll_action_requests())
 
     return True
 
@@ -120,4 +137,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     data = hass.data.get(DOMAIN, {}).pop(entry.entry_id, None)
     if data and data.get("unsub"):
         data["unsub"]()
+    if data and data.get("unsub_action_requests"):
+        data["unsub_action_requests"]()
     return unloaded
