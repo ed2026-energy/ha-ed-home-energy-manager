@@ -1,10 +1,12 @@
 ![Home Energy Manager](https://raw.githubusercontent.com/ed2026-energy/ha-ed-home-energy-manager/main/icon.png)
 
+**Systems · Data · AI, Aligned**
+
 # Home Energy Manager
 
 *(voorheen "ED Energy Component Scan" — zelfde integratie, nieuwe naam.)*
 
-Door [Embedded Design](https://www.embedded-design.nl) — systemen, data en AI op een lijn.
+Door [Embedded Design](https://www.embedded-design.nl).
 
 Home Assistant custom-integratie die:
 
