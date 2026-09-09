@@ -4,8 +4,6 @@
 
 # Home Energy Manager
 
-*(voorheen "ED Energy Component Scan" — zelfde integratie, nieuwe naam.)*
-
 Door [Embedded Design](https://www.embedded-design.nl).
 
 Home Assistant custom-integratie die:
