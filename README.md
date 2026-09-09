@@ -1,6 +1,4 @@
-![Home Energy Manager](https://raw.githubusercontent.com/ed2026-energy/ha-ed-home-energy-manager/main/icon.png)
-
-**Systems · Data · AI, Aligned**
+![Embedded Design — Systems · Data · AI, Aligned](https://raw.githubusercontent.com/ed2026-energy/ha-ed-home-energy-manager/main/logo.png)
 
 # Home Energy Manager
 
